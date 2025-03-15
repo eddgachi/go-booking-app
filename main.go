@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 func main() {
 	// var conferenceName string = "Go conference"
@@ -8,39 +11,80 @@ func main() {
 	const conferenceTickets int = 50
 	var remainingTickets uint = 50
 
-	// fmt.Println("Welcome to", conferenceName, "booking application")
-	fmt.Printf("Welcome to %v booking application\n", conferenceName)
-	fmt.Printf("We have a total of %v tickets and %v are still available\n", conferenceTickets, remainingTickets)
-	fmt.Println("Get your tickets here")
-
 	// var bookings = [50]string{}
 	// var bookings []string // changed to slice
 	bookings := []string{}
 
-	var firstName string
-	var lastName string
-	var email string
-	var userTickets uint
+	// fmt.Println("Welcome to", conferenceName, "booking application")
+	fmt.Printf("Welcome to %v booking application\n", conferenceName)
+	fmt.Printf("We have a total of %v tickets and %v are still available\n", conferenceTickets, remainingTickets)
+	fmt.Println("Get your tickets here to attend")
 
-	fmt.Println("Enter your first name: ")
-	fmt.Scan(&firstName)
+	for {
+		var firstName string
+		var lastName string
+		var email string
+		var userTickets uint
 
-	fmt.Println("Enter your last name: ")
-	fmt.Scan(&lastName)
+		fmt.Println("Enter your first name: ")
+		fmt.Scan(&firstName)
 
-	fmt.Println("Enter your email address: ")
-	fmt.Scan(&email)
+		fmt.Println("Enter your last name: ")
+		fmt.Scan(&lastName)
 
-	fmt.Println("Enter number of tickets: ")
-	fmt.Scan(&userTickets)
+		fmt.Println("Enter your email address: ")
+		fmt.Scan(&email)
 
-	remainingTickets = remainingTickets - userTickets
-	// bookings[0] = firstName + " " + lastName // add items to an array
-	bookings = append(bookings, firstName+" "+lastName)
+		fmt.Println("Enter number of tickets: ")
+		fmt.Scan(&userTickets)
 
-	fmt.Printf("Thank you %v %v for booking %v tickets. You will receive a confirmation email at %v\n", firstName, lastName, userTickets, email)
-	fmt.Printf("%v tickets remaining for %v\n", remainingTickets, conferenceName)
+		isValidName := len(firstName) >= 2 && len(lastName) >= 2
+		isValidEmail := strings.Contains(email, "@")
+		isValidTicketNumber := userTickets > 0 && userTickets <= remainingTickets
 
-	fmt.Printf("These are all our bookings %v\n", bookings)
+		// isInValidCity := city == "Singapore" || city == "London"
+
+		if isValidName && isValidEmail && isValidTicketNumber {
+			remainingTickets = remainingTickets - userTickets
+			// bookings[0] = firstName + " " + lastName // add items to an array
+			bookings = append(bookings, firstName+" "+lastName)
+
+			fmt.Printf("Thank you %v %v for booking %v tickets. You will receive a confirmation email at %v\n", firstName, lastName, userTickets, email)
+			fmt.Printf("%v tickets remaining for %v\n", remainingTickets, conferenceName)
+
+			firstNames := []string{}
+
+			for _, booking := range bookings {
+				var names = strings.Fields(booking)
+				var firstName = names[0]
+				firstNames = append(firstNames, firstName)
+			}
+
+			fmt.Printf("The first names of bookings are %v\n", firstNames)
+
+			noTicketsRemaining := remainingTickets == 0
+			if noTicketsRemaining {
+				fmt.Println("Our conference is booked out. Come back next year.")
+				break
+			}
+
+			// alternative way of doing the conditional
+			// if remainingTickets == 0 {
+			// 	fmt.Println("Our conference is booked out. Come back next year.")
+			// 	break
+			// }
+		} else {
+			if !isValidName {
+				fmt.Println("the first name or last name you entered is too short")
+			}
+			if !isValidEmail {
+				fmt.Println("the email address you entered doesn't contain an @ sign")
+			}
+			if !isValidTicketNumber {
+				fmt.Println("the number of tickets you entered is invalid")
+			}
+		}
+
+	}
 
 }
